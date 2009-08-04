@@ -3,6 +3,7 @@
    #use strict;
    use Class::Struct;
    use Net::Twitter;
+   use Term::ReadKey;
 
 
    struct Friend => {
@@ -15,7 +16,25 @@
 
    my @FriendsArray;
 
-   my $twit = Net::Twitter->new({username=>"", password=>"" });
+   print "Please enter your twitter username:\t";
+   my $username = <STDIN>;
+
+   print "Please enter your twitter password:\t";
+   ReadMode 'raw';
+   my $passphrase;
+   while (1) {
+      my $key .= (ReadKey 0);
+      if ($key ne "\n") {
+        print '*';
+        $passphrase .= $key
+      } else {
+         last
+      }
+   }
+   ReadMode 'restore';
+
+
+   my $twit = Net::Twitter->new({username=>$username, password=>$passphrase });
    my $friendres = $twit->friends();
 
    foreach $myfriend (@{$friendres}){  
